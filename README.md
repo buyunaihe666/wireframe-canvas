@@ -1,5 +1,9 @@
 # 线框画布 · Wireframe Canvas
 
+[![Release](https://img.shields.io/github/v/release/buyunaihe666/wireframe-canvas?label=release)](https://github.com/buyunaihe666/wireframe-canvas/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows%20x64-0078d4)](https://github.com/buyunaihe666/wireframe-canvas/releases)
+
 给前端/AI 协作做的**桌面端多端线框标注工具**。
 
 一块白色画布，画布尺寸**就是真实设备视口尺寸**（手机 390×844 / 平板 768×1024 / 桌面 1440×900 …）。
@@ -58,6 +62,11 @@ npm run deploy     # 再镜像部署 + 刷新快捷方式
 > 那样每次用完这个应用，下一轮构建就会卡死。所以先镜像部署到用户目录再建快捷方式。
 
 ### 方式二：安装版
+
+**直接下载（推荐）** —— 去 [Releases](https://github.com/buyunaihe666/wireframe-canvas/releases) 拿
+`WireframeCanvas-Setup-1.0.0.exe`，双击安装即可（首次运行若被 SmartScreen 拦下，点「更多信息」→「仍要运行」）。
+
+或者从源码自己构建：
 
 ```
 dist/线框画布 Setup 1.0.0.exe
