@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'" />
+<title>线框画布</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body data-mode="app">
+
+<!-- ============ 图标 ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="i-undo"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></g>
+    <g id="i-redo"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></g>
+    <g id="i-plus"><path d="M12 5v14M5 12h14"/></g>
+    <g id="i-minus"><path d="M5 12h14"/></g>
+    <g id="i-fit"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></g>
+    <g id="i-open"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></g>
+    <g id="i-save"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></g>
+    <g id="i-copy"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4V4h11v1"/></g>
+    <g id="i-caret"><path d="m6 9 6 6 6-6"/></g>
+    <g id="i-trash"><path d="M4 7h16M9 7V5h6v2M6 7l1 14h10l1-14"/></g>
+    <g id="i-ruler"><path d="M3 15 15 3l6 6L9 21z"/><path d="m8 10 2 2M11 7l2 2M5 13l2 2"/></g>
+    <g id="i-broom"><path d="M4 20h9l-2-6H6z"/><path d="M13 14 20 4"/></g>
+  </defs>
+</svg>
+
+<!-- ============ 应用外壳 ============ -->
+<div id="chrome">
+
+  <header id="toolbar">
+    <div class="brand">
+      <span class="logo">线</span>
+      <input id="projName" class="proj-name" value="未命名工程" spellcheck="false" />
+      <span id="dirty" class="dirty" hidden>•</span>
+    </div>
+
+    <div class="tb-group">
+      <div class="menu-wrap">
+        <button id="btnAdd" class="btn primary-ghost" title="新建画板（选择设备尺寸）">
+          <svg class="ic"><use href="#i-plus"/></svg><span>新建画板</span>
+          <svg class="ic sm"><use href="#i-caret"/></svg>
+        </button>
+        <div id="deviceMenu" class="menu" hidden></div>
+      </div>
+    </div>
+
+    <div class="tb-sep"></div>
+
+    <div class="tb-group zoom-group">
+      <button id="btnZoomOut" class="btn icon" title="缩小 (Ctrl+-)"><svg class="ic"><use href="#i-minus"/></svg></button>
+      <button id="btnZoomVal" class="btn zoom-val" title="点击恢复 100%">100%</button>
+      <button id="btnZoomIn" class="btn icon" title="放大 (Ctrl+=)"><svg class="ic"><use href="#i-plus"/></svg></button>
+      <button id="btnFit" class="btn icon" title="适应窗口 (Ctrl+0)"><svg class="ic"><use href="#i-fit"/></svg></button>
+    </div>
+
+    <div class="tb-sep"></div>
+
+    <div class="tb-group">
+      <button id="btnUndo" class="btn icon" title="撤销 (Ctrl+Z)"><svg class="ic"><use href="#i-undo"/></svg></button>
+      <button id="btnRedo" class="btn icon" title="重做 (Ctrl+Shift+Z)"><svg class="ic"><use href="#i-redo"/></svg></button>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="tb-group">
+      <label class="chk" title="截图时在画板右上角标注设备名与尺寸">
+        <input type="checkbox" id="chkDim" checked /><span>尺寸标注</span>
+      </label>
+      <label class="chk" title="截图时在画板下方标注每个框的层级与说明文字">
+        <input type="checkbox" id="chkLegend" /><span>文字清单</span>
+      </label>
+    </div>
+
+    <div class="tb-sep"></div>
+
+    <div class="tb-group">
+      <button id="btnOpen" class="btn icon" title="打开工程 (Ctrl+O)"><svg class="ic"><use href="#i-open"/></svg></button>
+      <button id="btnSave" class="btn icon" title="保存工程 (Ctrl+S)"><svg class="ic"><use href="#i-save"/></svg></button>
+    </div>
+
+    <div class="tb-sep"></div>
+
+    <div class="menu-wrap right">
+      <button id="btnShot" class="btn primary" title="截图并复制到剪贴板 (Ctrl+Shift+C)">
+        <svg class="ic"><use href="#i-copy"/></svg><span>截图</span>
+        <svg class="ic sm"><use href="#i-caret"/></svg>
+      </button>
+      <div id="shotMenu" class="menu" hidden>
+        <button data-act="copy-current">复制当前画板 → 剪贴板</button>
+        <button data-act="copy-all">复制全部画板（拼接成一张）</button>
+        <button data-act="save-current">当前画板另存为 PNG…</button>
+        <button data-act="save-all">全部画板另存为 PNG…</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="viewport">
+    <div id="workspace"></div>
+    <div id="empty" class="empty" hidden>
+      <p>还没有画板</p>
+      <button id="btnAddEmpty" class="btn primary">＋ 新建第一个画板</button>
+    </div>
+    <div id="guides" class="guides" hidden></div>
+  </main>
+
+  <footer id="statusbar">
+    <span id="hint">在画板空白处<b>拖拽</b>即可拉出一个文本框 · 双击框内输入说明 · 点右下角标签切 h1 / h2 / h3 / p / 容器</span>
+    <span class="sb-right">
+      <span id="selInfo" class="sb-chip"></span>
+      <span id="countInfo" class="sb-chip"></span>
+    </span>
+  </footer>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>

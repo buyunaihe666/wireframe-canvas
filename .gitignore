@@ -1,0 +1,20 @@
+# 依赖
+node_modules/
+
+# 构建产物（体积 400MB+，不进仓库；用 npm run dist 本地生成）
+dist/
+dist-portable/
+release/
+
+# 自检与临时输出
+.selftest-out/
+*.log
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+
+# 打包缓存
+.electron-builder-cache/

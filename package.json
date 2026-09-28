@@ -1,0 +1,63 @@
+{
+  "name": "wireframe-canvas",
+  "productName": "线框画布",
+  "version": "1.0.0",
+  "description": "多端线框画布 — 按设备尺寸固定画板，拖框写说明，一键截图交给大模型",
+  "main": "main.js",
+  "private": true,
+  "author": "wireframe-canvas",
+  "scripts": {
+    "start": "electron .",
+    "clean": "node tools/clean.js",
+    "icon": "electron tools/makeicon.js",
+    "selftest": "electron tools/selftest.js",
+    "dist:dir": "electron-builder --win --dir",
+    "dist": "electron-builder --win",
+    "dist:portable": "electron-builder --win portable",
+    "deploy": "node tools/deploy.js",
+    "smoke": "node tools/smoketest.js"
+  },
+  "devDependencies": {
+    "electron": "^44.4.5",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "local.wireframe.canvas",
+    "productName": "线框画布",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "npmRebuild": false,
+    "electronLanguages": [
+      "zh-CN",
+      "en-US"
+    ],
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "build/app.ico",
+      "package.json"
+    ],
+    "win": {
+      "icon": "build/app.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "线框画布"
+    }
+  }
+}
